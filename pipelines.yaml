@@ -1,0 +1,29 @@
+config:
+  argocd:
+    namespace: openshift-gitops
+  pipelines:
+    name: cicd
+environments:
+- apps:
+  - name: app-web
+    services:
+    - name: web
+      pipelines:
+        integration:
+          bindings:
+          - dev-app-web-web-binding
+          - github-push-binding
+      source_url: https://github.com/openshift-examples/web.git
+      webhook:
+        secret:
+          name: webhook-secret-dev-web
+          namespace: cicd
+  name: dev
+  pipelines:
+    integration:
+      bindings:
+      - github-push-binding
+      template: app-ci-template
+- name: stage
+gitops_url: https://github.com/rbo/openshift-examples-gitops.git
+version: 1
